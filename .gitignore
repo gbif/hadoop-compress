@@ -4,6 +4,7 @@
 *target
 .DS_Store
 logs
+build
 
 # Package Files #
 *.jar

@@ -13,10 +13,10 @@ import org.apache.hadoop.io.compress.Decompressor;
 public class D2Decompressor extends Inflater implements Decompressor {
 
   /**
-   * Uses no wrap mode.
+   * Constructs and inflater in no wrap mode (e.g. expects no headers or footer)
    */
   public D2Decompressor() {
-    super(true);  // forces use of nowrap mode
+    super(true);
   }
 
   @Override

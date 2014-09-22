@@ -113,7 +113,7 @@ public final class D2Utils {
     Closer closer = Closer.create();
     closer.register(target);
     try (
-      D2OutputStream compressed = new D2OutputStream(target)
+      D2CompressorStream compressed = new D2CompressorStream(target);
     ) {
       ByteStreams.copy(uncompressed, compressed);
       target.flush(); // probably unnecessary but not guaranteed by close()
