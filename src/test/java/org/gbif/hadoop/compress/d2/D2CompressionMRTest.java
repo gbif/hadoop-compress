@@ -22,7 +22,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.junit.Assert;
 
-public class D2CompressionHDFSTest extends ClusterMapReduceTestCase {
+public class D2CompressionMRTest extends ClusterMapReduceTestCase {
 
   // control the input test file
   private static final int LINES_IN_FILE = 500; // keep below 1000 or else modify to3Chars()

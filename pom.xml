@@ -32,7 +32,6 @@
   </parent>
 
   <properties>
-    <commons-compress.version>1.8.1</commons-compress.version>
     <hadoop-core.version>2.0.0-mr1-cdh4.2.1</hadoop-core.version>
     <hadoop-non-core.version>2.0.0-cdh4.2.1</hadoop-non-core.version>
     <guava.version>18.0</guava.version>
@@ -54,11 +53,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>${commons-compress.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop-non-core.version}</version>
@@ -69,14 +63,15 @@
       <version>${hadoop-core.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-hdfs</artifactId>
-      <version>${hadoop-non-core.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <version>${hadoop-non-core.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -105,5 +100,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>

@@ -3,13 +3,9 @@ package org.gbif.hadoop.compress.d2;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.List;
 import java.util.zip.InflaterInputStream;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 import com.google.common.io.Closer;
 
 /**
@@ -23,7 +19,8 @@ public final class D2Utils {
   public static final String FILE_EXTENSION = ".def2";
 
   /**
-   * Utility to construct an input stream suitable for reading a d2 file in isolation.
+   * Utility to construct an input stream suitable for reading a d2 file in isolation.  Note that this will return a
+   * stream which includes closing bytes.  It is not suitable for combining deflated streams.
    *
    * @param in An input stream which should provide raw d2 bytes
    *
@@ -42,29 +39,6 @@ public final class D2Utils {
   }
 
   /**
-   * Utility to prepare streams for reading in concatenation using {@link java.io.SequenceInputStream}.
-   *
-   * @param sources Streams which provide raw d2 bytes order by the manner in which they should be concatenated
-   *
-   * @return Input streams prepared to handle footers correctly
-   */
-  public static List<FooteredInputStream> prepareD2Streams(Iterable<InputStream> sources) {
-    Iterator<InputStream> iter = sources.iterator();
-    List<FooteredInputStream> result = Lists.newArrayList();
-    while (iter.hasNext()) {
-      //noinspection resource
-      InputStream in = iter.next();
-      if (iter.hasNext()) {
-        result.add(new FooteredInputStream(in, D2Footer.FOOTER_LENGTH));
-      } else {
-        // the last stream needs the close marker in the footer (important!)
-        result.add(new FooteredInputStream(in, D2Footer.FOOTER_LENGTH_ISOLATED_READ));
-      }
-    }
-    return result;
-  }
-
-  /**
    * Merges the content of the incoming streams of compressed content onto the output stream which are all then closed.
    *
    * @param compressed streams of compressed content
@@ -74,7 +48,7 @@ public final class D2Utils {
     Closer closer = Closer.create();
     closer.register(target);
     try (
-      InputStream in = decompressInputSteam(D2CombineInputStream.build(compressed))
+      InputStream in = decompressInputSteam(new D2CombineInputStream(compressed))
     ) {
       ByteStreams.copy(in, target);
       target.flush(); // probably unnecessary but not guaranteed by close()

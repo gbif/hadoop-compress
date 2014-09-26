@@ -1,8 +1,6 @@
 package org.gbif.hadoop.compress.d2;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
@@ -19,39 +17,60 @@ import com.google.common.collect.Lists;
  * This may be wrapped by an InflaterInputStream, with the inflater constructed in no wrap mode to decompress and read
  * the combined stream.
  */
-@SuppressWarnings("CyclicClassDependency")
-public class D2CombineInputStream extends SequenceInputStream {
+public class D2CombineInputStream extends InputStream {
 
-  private final List<? extends FooteredInputStream> streams;
+  private final SequenceInputStream combinedStream;
+  private final List<FooteredInputStream> deflatedStreams;
+
   private Long crc32;
   private Long compressedLength;
   private Long uncompressedLength;
 
-  public static D2CombineInputStream build(Iterable<InputStream> incoming) {
-    return new D2CombineInputStream(D2Utils.prepareD2Streams(incoming));
-  }
-
-  public static D2CombineInputStream buildFromFiles(Iterable<File> files) throws FileNotFoundException {
-    List<InputStream> streams = Lists.newArrayList();
-    for (File f : files) {
-      streams.add(new FileInputStream(f));
+  /**
+   * Builds a combining stream from the input streams which must provide a raw byte stream which includes the D2Footer.
+   * @param streams to raw D2 byte streams, such as file streams to .def2 files
+   */
+  public D2CombineInputStream(Iterable<InputStream> streams) {
+    List<FooteredInputStream> raw = Lists.newArrayList();
+    for (InputStream in : streams) {
+      // strip the complete footer (important!)
+      raw.add(new FooteredInputStream(in, D2Footer.FOOTER_LENGTH));
     }
-    return new D2CombineInputStream(D2Utils.prepareD2Streams(streams));
+    List<InputStream> combined = Lists.<InputStream>newArrayList(raw);
+    // add a new stream which simply provides a closing byte sequence
+    combined.add(new ByteArrayInputStream(D2Footer.FOOTER_CLOSE_DEFLATE));
+
+    combinedStream = new SequenceInputStream(Collections.enumeration(combined));
+    deflatedStreams = raw;
   }
 
-  private D2CombineInputStream(List<? extends FooteredInputStream> e) {
-    super(Collections.enumeration(e));
-    streams = e;
+  @Override
+  public int read() throws IOException {
+    return combinedStream.read();
+  }
+
+  @Override
+  public int available() throws IOException {
+    return combinedStream.available();
+  }
+
+  @Override
+  public long skip(long n) throws IOException {
+    return combinedStream.skip(n);
+  }
+
+  public int read(byte b[], int off, int len) throws IOException {
+    return combinedStream.read(b, off, len);
   }
 
   @Override
   public void close() throws IOException {
-    super.close();
+    combinedStream.close();
 
     Long localCrc32 = null;
     long localCompressedLength = 0;
     long localUncompressedLength = 0;
-    for (FooteredInputStream stream : streams) {
+    for (FooteredInputStream stream : deflatedStreams) {
       try {
         D2Footer footer = D2Footer.buildFooter(stream.getFooter());
 
@@ -67,7 +86,11 @@ public class D2CombineInputStream extends SequenceInputStream {
       }
     }
 
-    // set values only if we managed to set them all
+    // The final stream reported a compressed length without the closing bytes, which is correct for isolated deflation
+    // but here we actually returned the closing bytes, so we adjust accordingly.
+    localCompressedLength += D2Footer.FOOTER_CLOSE_DEFLATE.length;
+
+    // values only if we managed to set them all
     crc32 = localCrc32;
     uncompressedLength = localUncompressedLength;
     compressedLength = localCompressedLength;

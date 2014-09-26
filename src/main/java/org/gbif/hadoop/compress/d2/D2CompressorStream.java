@@ -7,7 +7,7 @@ import org.apache.hadoop.io.compress.CompressorStream;
 
 public class D2CompressorStream extends CompressorStream {
 
-  private static final int DEFAULT_BUFFER_SIZE = 1024;
+  private static final int DEFAULT_BUFFER_SIZE = 8024;
   private final D2Compressor compressor;
 
   public D2CompressorStream(OutputStream out, D2Compressor compressor, int bufferSize) {
@@ -39,6 +39,11 @@ public class D2CompressorStream extends CompressorStream {
       }
     }
     out.flush();
+  }
+
+  @Override
+  public void write(byte[] b, int off, int len) throws IOException {
+    super.write(b, off, len);
   }
 
   /**

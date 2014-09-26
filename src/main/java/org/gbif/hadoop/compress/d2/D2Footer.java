@@ -1,6 +1,7 @@
 package org.gbif.hadoop.compress.d2;
 
 import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
 
 /**
  * Defines the structure and serialization of the custom D2 fixed length footer.
@@ -17,7 +18,13 @@ public class D2Footer {
 
   // A fixed sequence that informs the deflate stream is closing
   // See https://www.ietf.org/rfc/rfc1951.txt for some light reading...
-  private static final byte[] FOOTER_CLOSE_DEFLATE = {(byte) 3, (byte) 0};
+  static final byte[] FOOTER_CLOSE_DEFLATE = {(byte) 3, (byte) 0};
+  static final long FOOTER_CLOSE_CRC;
+  static {
+    CRC32 crc = new CRC32();
+    crc.update(FOOTER_CLOSE_DEFLATE);
+    FOOTER_CLOSE_CRC = crc.getValue();
+  }
 
   // The total length of the footer
   public static final int FOOTER_LENGTH = 26;

@@ -9,7 +9,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.compress.Compressor;
 
 /**
- * A deflater that provides hooks to run as a compressor with Hadoop.
+ * A deflater that provides hooks to run as a compressor with Hadoop and keeps track of a CRC-32 checksum for the
+ * uncompressed data.
  */
 public class D2Compressor extends Deflater implements Compressor {
   private final Checksum checksum = new CRC32(); // tracks CRC of uncompressed data
@@ -24,9 +25,15 @@ public class D2Compressor extends Deflater implements Compressor {
   }
 
   @Override
+  public void setInput(byte[] b, int off, int len) {
+    super.setInput(b, off, len);
+    checksum.update(b, off, len);
+  }
+
+  @Override
   public int compress(byte[] b, int off, int len) throws IOException {
     int compressedSize = deflate(b, off, len, SYNC_FLUSH);
-    checksum.update(b, off, len);
+
     // copied out, so they are still available even after closing
     bytesWritten = super.getBytesWritten();
     bytesRead = super.getBytesRead();
