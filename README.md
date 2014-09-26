@@ -1,7 +1,7 @@
 hadoop-compress
 ===============
 
-This project provides the ability to create compressed content in parallel using Hadoop and then merge the content into a Zip files without decompressing the content.
+This project provides the ability to compressed content in parallel using Hadoop and then merge the compressed content into a Zip file without decompressing.
 
 Specifically, this project provides a deflate format "version 2" which adds a custom fixed-length footer to a deflated file that provides the lengths and CRC-32 checksum needed to allow merging without inflating.  
 
