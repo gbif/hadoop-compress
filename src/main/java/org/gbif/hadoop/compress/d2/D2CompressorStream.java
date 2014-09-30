@@ -1,5 +1,6 @@
 package org.gbif.hadoop.compress.d2;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -7,7 +8,7 @@ import org.apache.hadoop.io.compress.CompressorStream;
 
 public class D2CompressorStream extends CompressorStream {
 
-  private static final int DEFAULT_BUFFER_SIZE = 8024;
+  private static final int DEFAULT_BUFFER_SIZE = 8192; // same default as BufferedInputStream
   private final D2Compressor compressor;
 
   public D2CompressorStream(OutputStream out, D2Compressor compressor, int bufferSize) {

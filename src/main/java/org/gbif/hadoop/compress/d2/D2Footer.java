@@ -57,7 +57,7 @@ public class D2Footer {
 
   public static D2Footer buildFooter(byte[] footer) {
     ByteBuffer bb = ByteBuffer.wrap(footer);
-    if (footer.length == FOOTER_LENGTH) {
+    if (FOOTER_LENGTH == footer.length) {
       bb.get(new byte[FOOTER_CLOSE_DEFLATE.length]); // skip header if present
     }
     return new D2Footer(bb.getLong(), bb.getLong(), bb.getLong());

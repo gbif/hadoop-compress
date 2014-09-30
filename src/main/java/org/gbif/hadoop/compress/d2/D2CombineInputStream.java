@@ -7,6 +7,7 @@ import java.io.SequenceInputStream;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 /**
@@ -59,7 +60,7 @@ public class D2CombineInputStream extends InputStream {
     return combinedStream.skip(n);
   }
 
-  public int read(byte b[], int off, int len) throws IOException {
+  public int read(byte[] b, int off, int len) throws IOException {
     return combinedStream.read(b, off, len);
   }
 
@@ -97,23 +98,17 @@ public class D2CombineInputStream extends InputStream {
   }
 
   public Long getCrc32() {
-    if (crc32 == null) {
-      throw new IllegalStateException("Can only retrieve CRC-32 if all streams were read to completion");
-    }
+    Preconditions.checkState(crc32 != null, "Can only retrieve CRC-32 if all streams were read to completion");
     return crc32;
   }
 
   public Long getCompressedLength() {
-    if (compressedLength == null) {
-      throw new IllegalStateException("Can only retrieve compressed length if all streams were read to completion");
-    }
+    Preconditions.checkState(compressedLength != null, "Can only retrieve compressed length if all streams were read to completion");
     return compressedLength;
   }
 
   public Long getUncompressedLength() {
-    if (uncompressedLength == null) {
-      throw new IllegalStateException("Can only retrieve uncompressed length if all streams were read to completion");
-    }
+    Preconditions.checkState(uncompressedLength != null, "Can only retrieve uncompressed length if all streams were read to completion");
     return uncompressedLength;
   }
 }

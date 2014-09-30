@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
@@ -86,14 +86,14 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
     for (int i = 0; i < LINES_IN_FILE; i++) {
       // we write a line number so we get consistent sorting
       sb.append(to3Char(i));
-      sb.append("\t");
+      sb.append('\t');
       sb.append(RandomStringUtils.randomAlphabetic(CHARS_PER_LINE));
-      sb.append("\n");
+      sb.append('\n');
     }
     return sb.toString().getBytes();
   }
 
-  private String to3Char(int i) {
+  private static String to3Char(int i) {
     if (i<10) {
       return "00" + i;
     } else if (i <100) {

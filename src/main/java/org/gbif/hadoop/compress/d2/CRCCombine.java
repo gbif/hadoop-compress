@@ -10,6 +10,7 @@ package org.gbif.hadoop.compress.d2;
 final class CRCCombine {
 
   private static final int GF2_DIM = 32;
+  private static final long CRC_POLYNOMIAL= 0xedb88320L;
 
   static long combine(long crc1, long crc2, long len2) {
 
@@ -20,7 +21,7 @@ final class CRCCombine {
 
     // put operator for one zero bit in odd
     long[] odd = new long[GF2_DIM];
-    odd[0] = 0xedb88320L;          // CRC-32 polynomial
+    odd[0] = CRC_POLYNOMIAL;
     long row = 1;
     for (int n = 1; n < GF2_DIM; n++) {
       odd[n] = row;

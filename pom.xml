@@ -35,6 +35,7 @@
     <hadoop-core.version>2.0.0-mr1-cdh4.2.1</hadoop-core.version>
     <hadoop-non-core.version>2.0.0-cdh4.2.1</hadoop-non-core.version>
     <guava.version>18.0</guava.version>
+    <commons-lang.version>3.3.2</commons-lang.version>
     <junit.version>4.11</junit.version>
   </properties>
 
@@ -97,6 +98,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons-lang.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

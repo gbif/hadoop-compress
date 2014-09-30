@@ -96,5 +96,6 @@ public final class D2Utils {
     }
   }
 
-  private D2Utils() {}
+  private D2Utils() {
+  }
 }

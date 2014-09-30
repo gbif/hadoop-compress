@@ -2,24 +2,17 @@ package org.gbif.hadoop.compress.d2.zip;
 
 import org.gbif.hadoop.compress.d2.D2CombineInputStream;
 import org.gbif.hadoop.compress.d2.D2Utils;
-import org.gbif.hadoop.compress.d2.FooteredInputStream;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.zip.ZipInputStream;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,7 +52,7 @@ public class ModalZipTest {
   /**
    * Illustrates how to add both pre-compressed and uncompressed content to a Zip.
    */
-  private byte[] createZip(byte[] original, byte[] compressed) throws IOException {
+  private static byte[] createZip(byte[] original, byte[] compressed) throws IOException {
     try (
       ByteArrayOutputStream zipped = new ByteArrayOutputStream();
       ModalZipOutputStream zos = new ModalZipOutputStream(new BufferedOutputStream(zipped));
@@ -68,8 +61,8 @@ public class ModalZipTest {
       // add a pre-compressed entry
       ZipEntry ze = new ZipEntry("pre-deflated.txt");
       zos.putNextEntry(ze, MODE.PRE_DEFLATED);
-      try (D2CombineInputStream in =
-             new D2CombineInputStream(Lists.<InputStream>newArrayList(new ByteArrayInputStream(compressed)))) {
+      try (D2CombineInputStream in = new D2CombineInputStream(Lists.<InputStream>newArrayList(new ByteArrayInputStream(
+        compressed)))) {
         ByteStreams.copy(in, zos);
         in.close(); // required to get the sizes
         ze.setSize(in.getUncompressedLength()); // important to set the sizes and CRC
@@ -90,7 +83,7 @@ public class ModalZipTest {
     }
   }
 
-  private byte[] compress(byte[] original) throws IOException {
+  private static byte[] compress(byte[] original) throws IOException {
     try (
       InputStream in = new ByteArrayInputStream(original);
       ByteArrayOutputStream out = new ByteArrayOutputStream()
