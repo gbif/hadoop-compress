@@ -31,6 +31,7 @@
 
   <properties>
     <hadoop.version>2.5.0-cdh5.2.0</hadoop.version>
+    <!-- needed by minicluster for tests, suggest users of this library exclude this and use higher versions -->
     <guava.version>14.0.1</guava.version>
     <commons-lang.version>3.3.2</commons-lang.version>
     <junit.version>4.11</junit.version>
