@@ -30,19 +30,18 @@
   </parent>
 
   <properties>
-    <hadoop-core.version>2.0.0-mr1-cdh4.2.1</hadoop-core.version>
-    <hadoop-non-core.version>2.0.0-cdh4.2.1</hadoop-non-core.version>
-    <guava.version>18.0</guava.version>
+    <hadoop.version>2.5.0-cdh5.2.0</hadoop.version>
+    <guava.version>14.0.1</guava.version>
     <commons-lang.version>3.3.2</commons-lang.version>
     <junit.version>4.11</junit.version>
   </properties>
-  
+
   <scm>
     <connection>scm:git:git@github.com:gbif/hadoop-compress.git</connection>
     <url>https://github.com/gbif/hadoop-compress</url>
     <developerConnection>scm:git:git@github.com:gbif/hadoop-compress.git</developerConnection>
     <tag>HEAD</tag>
-  </scm>  
+  </scm>
 
   <build>
     <plugins>
@@ -61,42 +60,44 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
-      <version>${hadoop-non-core.version}</version>
+      <version>${hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-core</artifactId>
-      <version>${hadoop-core.version}</version>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
+
+    <!-- FOR TESTS -->
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-minicluster</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
-      <version>${hadoop-non-core.version}</version>
+      <version>${hadoop.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
-      <version>${hadoop-non-core.version}</version>
+      <version>${hadoop.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
-      <version>${hadoop-non-core.version}</version>
+      <version>${hadoop.version}</version>
       <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-test</artifactId>
-      <version>${hadoop-core.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
