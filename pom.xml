@@ -4,7 +4,7 @@
 
   <groupId>org.gbif.hadoop</groupId>
   <artifactId>hadoop-compress</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <packaging>jar</packaging>
 
   <repositories>
@@ -41,7 +41,7 @@
     <connection>scm:git:git@github.com:gbif/hadoop-compress.git</connection>
     <url>https://github.com/gbif/hadoop-compress</url>
     <developerConnection>scm:git:git@github.com:gbif/hadoop-compress.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>hadoop-compress-1.1</tag>
   </scm>
 
   <build>
