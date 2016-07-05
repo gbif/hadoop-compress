@@ -8,7 +8,7 @@ This project provides the ability to build Zip files from compressed content ```
 
 When used in Hadoop, this minimizes bandwidth, CPU and allows the ability to compress content in parallel thus making the building of Zip files as efficient as possible.
 
-Contributions and improvements to this project are very welcome.
+Contributions and improvements to this project are very welcome.  Please contact timrobertson100@gmail.com for questions.
 
 ## How to build this project
 
