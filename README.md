@@ -1,4 +1,6 @@
-#hadoop-compress
+# hadoop-compress
+
+Zip compression support for hadoop
 
 This project provides the ability to compress content in parallel using Hadoop and then merge the compressed content into a Zip file without decompressing.
 
