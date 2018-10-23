@@ -105,7 +105,7 @@ public class D2CompressionTest {
    */
   @Test
   public void testCompress() throws IOException {
-    File original = File.createTempFile("original-", ".txt");
+    File original = randomFileOfSize(1024 * 1024 * 10); // 10MB
     File compressed = File.createTempFile("comp-", D2Utils.FILE_EXTENSION);
     D2Utils.compress(new FileInputStream(original), new FileOutputStream(compressed));
 
