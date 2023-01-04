@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.zip.ZipInputStream;
 
@@ -28,7 +29,7 @@ public class ModalZipTest {
    */
   @Test
   public void testPredeflated() throws IOException {
-    byte[] original = "Ghosts crowd the young child's fragile eggshell mind".getBytes();
+    byte[] original = "Ghosts crowd the young child's fragile eggshell mind".getBytes(StandardCharsets.UTF_8);
     byte[] compressed = compress(original);
     byte[] zipFile = createZip(original, compressed);
 
@@ -39,13 +40,13 @@ public class ModalZipTest {
       zin.getNextEntry();
       byte[] read = new byte[original.length];
       ByteStreams.read(zin, read, 0, read.length);
-      Assert.assertTrue("Uncompressed does not equal the original", Arrays.equals(read, original));
+      Assert.assertArrayEquals("Uncompressed does not equal the original", read, original);
 
       // read the entry that was compressed as it was added to the zip
       zin.getNextEntry();
       read = new byte[original.length];
       ByteStreams.read(zin, read, 0, read.length);
-      Assert.assertTrue("Uncompressed does not equal the original", Arrays.equals(read, original));
+      Assert.assertArrayEquals("Uncompressed does not equal the original", read, original);
     }
   }
 
@@ -63,7 +64,7 @@ public class ModalZipTest {
       zos.putNextEntry(ze, MODE.PRE_DEFLATED);
       try (D2CombineInputStream in = new D2CombineInputStream(Lists.<InputStream>newArrayList(new ByteArrayInputStream(
         compressed)))) {
-        ByteStreams.copy(in, zos);
+        D2Utils.copy(in, zos);
         in.close(); // required to get the sizes
         ze.setSize(in.getUncompressedLength()); // important to set the sizes and CRC
         ze.setCompressedSize(in.getCompressedLength());
@@ -75,7 +76,7 @@ public class ModalZipTest {
       ze = new ZipEntry("original.txt");
       zos.putNextEntry(ze, MODE.DEFAULT);
       try (InputStream in = new ByteArrayInputStream(original)) {
-        ByteStreams.copy(in, zos);
+        D2Utils.copy(in, zos);
       }
       zos.closeEntry();
       zos.close();

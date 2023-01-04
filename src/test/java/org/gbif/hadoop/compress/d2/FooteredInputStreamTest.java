@@ -42,7 +42,7 @@ public class FooteredInputStreamTest {
   @Test
   public void testReadFully() throws IOException {
     try (FooteredInputStream is = new FooteredInputStream(new ByteArrayInputStream(DATA), FOOTER.length)) {
-      ByteStreams.copy(is, ByteStreams.nullOutputStream());
+      D2Utils.copy(is, ByteStreams.nullOutputStream());
       is.close();
       assertNotNull("Unable to get the FOOTER, when we have read the stream fully", is.getFooter());
       assertArrayEquals("Footer is not equal", FOOTER, is.getFooter());

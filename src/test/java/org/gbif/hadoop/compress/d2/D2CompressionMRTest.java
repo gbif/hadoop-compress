@@ -5,11 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
@@ -20,7 +19,9 @@ import org.apache.hadoop.mapred.ClusterMapReduceTestCase;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
-import org.junit.Assert;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 public class D2CompressionMRTest extends ClusterMapReduceTestCase {
 
@@ -44,7 +45,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
       InputStream in = new ByteArrayInputStream(data);
       OutputStream out = getFileSystem().create(new Path(inDir, "original.txt"));
     ) {
-      ByteStreams.copy(in, out);
+      D2Utils.copy(in, out);
     }
 
     conf.setNumMapTasks(3); // we'll have 3 to merge
@@ -74,7 +75,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     D2Utils.decompress(parts, out);
-    Assert.assertTrue("Uncompressed content does not equal the original", Arrays.equals(data, out.toByteArray()));
+    assertArrayEquals("Uncompressed content does not equal the original", data, out.toByteArray());
   }
 
   /**
@@ -82,7 +83,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
    * 001,002,003 etc
    */
   private byte[] generateInput() throws UnsupportedEncodingException {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < LINES_IN_FILE; i++) {
       // we write a line number so we get consistent sorting
       sb.append(to3Char(i));
@@ -90,7 +91,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
       sb.append(RandomStringUtils.randomAlphabetic(CHARS_PER_LINE));
       sb.append('\n');
     }
-    return sb.toString().getBytes();
+    return sb.toString().getBytes(StandardCharsets.UTF_8);
   }
 
   private static String to3Char(int i) {
@@ -103,7 +104,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
   }
 
   @Override
-  protected void setUp() throws Exception {
+  public void setUp() throws Exception {
     // required or the cluster will not start
     System.setProperty("hadoop.log.dir", "target/logs");
     startCluster(true, null);

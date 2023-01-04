@@ -274,6 +274,7 @@ class ZipEntry implements ZipConstants, Cloneable {
   /**
    * Returns a string representation of the ZIP entry.
    */
+  @Override
   public String toString() {
     return getName();
   }
@@ -308,6 +309,7 @@ class ZipEntry implements ZipConstants, Cloneable {
   /**
    * Returns the hash code value for this entry.
    */
+  @Override
   public int hashCode() {
     return name.hashCode();
   }
@@ -315,6 +317,7 @@ class ZipEntry implements ZipConstants, Cloneable {
   /**
    * Returns a copy of this entry.
    */
+  @Override
   public Object clone() {
     try {
       ZipEntry e = (ZipEntry)super.clone();

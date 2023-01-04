@@ -332,6 +332,7 @@ public class ModalZipOutputStream extends DeflaterOutputStream implements ZipCon
    * @exception ZipException if a ZIP file error has occurred
    * @exception IOException if an I/O error has occurred
    */
+  @Override
   public synchronized void write(byte[] b, int off, int len)
     throws IOException
   {
@@ -378,6 +379,7 @@ public class ModalZipOutputStream extends DeflaterOutputStream implements ZipCon
    * @exception ZipException if a ZIP file error has occurred
    * @exception IOException if an I/O exception has occurred
    */
+  @Override
   public void finish() throws IOException {
     ensureOpen();
     if (finished) {
@@ -399,6 +401,7 @@ public class ModalZipOutputStream extends DeflaterOutputStream implements ZipCon
    * @exception ZipException if a ZIP file error has occurred
    * @exception IOException if an I/O error has occurred
    */
+  @Override
   public void close() throws IOException {
     if (!closed) {
       super.close();

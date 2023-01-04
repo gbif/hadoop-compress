@@ -1,6 +1,7 @@
 package org.gbif.hadoop.compress.d2;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.CRC32;
 
 import org.junit.Assert;
@@ -18,7 +19,7 @@ public class D2CompressorTest {
    */
   @Test
   public void testCRC() throws IOException {
-    byte[] data = "'Jam me, jack me, push me, pull me, talk hard.' (Nora Diniro, 1990)".getBytes();
+    byte[] data = "'Jam me, jack me, push me, pull me, talk hard.' (Nora Diniro, 1990)".getBytes(StandardCharsets.UTF_8);
 
     CRC32 rawCRC = new CRC32();
     rawCRC.update(data);

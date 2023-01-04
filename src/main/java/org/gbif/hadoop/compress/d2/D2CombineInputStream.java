@@ -37,7 +37,7 @@ public class D2CombineInputStream extends InputStream {
       // strip the complete footer (important!)
       raw.add(new FooteredInputStream(in, D2Footer.FOOTER_LENGTH));
     }
-    List<InputStream> combined = Lists.<InputStream>newArrayList(raw);
+    List<InputStream> combined = Lists.newArrayList(raw);
     // add a new stream which simply provides a closing byte sequence
     combined.add(new ByteArrayInputStream(D2Footer.FOOTER_CLOSE_DEFLATE));
 
@@ -60,6 +60,7 @@ public class D2CombineInputStream extends InputStream {
     return combinedStream.skip(n);
   }
 
+  @Override
   public int read(byte[] b, int off, int len) throws IOException {
     return combinedStream.read(b, off, len);
   }

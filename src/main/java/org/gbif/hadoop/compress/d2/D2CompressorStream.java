@@ -1,6 +1,5 @@
 package org.gbif.hadoop.compress.d2;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
