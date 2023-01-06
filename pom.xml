@@ -26,7 +26,7 @@
   </repositories>
 
   <properties>
-    <hadoop.version>3.3.0</hadoop.version>
+    <hadoop.version>3.3.4</hadoop.version>
     <!-- needed by minicluster for tests, suggest users of this library exclude this and use higher versions -->
     <guava.version>27.0-jre</guava.version>
     <commons-lang.version>3.3.2</commons-lang.version>
