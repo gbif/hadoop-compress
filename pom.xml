@@ -14,25 +14,28 @@
   <packaging>jar</packaging>
 
   <repositories>
-    <!-- Required for motherpom -->
     <repository>
-      <id>gbif-all</id>
-      <url>http://repository.gbif.org/content/groups/gbif</url>
+      <id>gbif-central</id>
+      <url>https://repository.gbif.org/repository/central/</url>
+    </repository>
+    <repository>
+      <id>gbif-release</id>
+      <url>https://repository.gbif.org/repository/releases/</url>
+    </repository>
+    <repository>
+      <id>gbif-snapshot</id>
+      <url>https://repository.gbif.org/repository/snapshots/</url>
     </repository>
     <repository>
       <id>gbif-thirdparty</id>
-      <url>http://repository.gbif.org/content/repositories/thirdparty</url>
-    </repository>
-    <repository>
-      <id>cloudera</id>
-      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+      <url>https://repository.gbif.org/repository/thirdparty/</url>
     </repository>
   </repositories>
 
   <properties>
     <hadoop.version>3.2.4</hadoop.version>
     <!-- needed by minicluster for tests, suggest users of this library exclude this and use higher versions -->
-    <guava.version>14.0.1</guava.version>
+    <guava.version>27.0-jre</guava.version>
     <commons-lang.version>3.3.2</commons-lang.version>
     <junit.version>4.12</junit.version>
   </properties>
@@ -57,8 +60,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.10.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
     </plugins>
