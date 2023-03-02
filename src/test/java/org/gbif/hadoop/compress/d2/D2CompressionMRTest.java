@@ -22,6 +22,8 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.junit.Assert;
 
+import static org.junit.Assert.assertTrue;
+
 public class D2CompressionMRTest extends ClusterMapReduceTestCase {
 
   // control the input test file
@@ -74,7 +76,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     D2Utils.decompress(parts, out);
-    Assert.assertTrue("Uncompressed content does not equal the original", Arrays.equals(data, out.toByteArray()));
+    assertTrue("Uncompressed content does not equal the original", Arrays.equals(data, out.toByteArray()));
   }
 
   /**
@@ -103,7 +105,7 @@ public class D2CompressionMRTest extends ClusterMapReduceTestCase {
   }
 
   @Override
-  protected void setUp() throws Exception {
+  public void setUp() throws Exception {
     // required or the cluster will not start
     System.setProperty("hadoop.log.dir", "target/logs");
     startCluster(true, null);
