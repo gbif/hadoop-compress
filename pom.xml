@@ -10,7 +10,7 @@
 
   <groupId>org.gbif.hadoop</groupId>
   <artifactId>hadoop-compress</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4-H3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <repositories>
