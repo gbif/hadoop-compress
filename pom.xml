@@ -33,7 +33,7 @@
   </repositories>
 
   <properties>
-    <hadoop.version>3.2.4</hadoop.version>
+    <hadoop.version>3.3.2</hadoop.version>
     <!-- needed by minicluster for tests, suggest users of this library exclude this and use higher versions -->
     <guava.version>14.0.1</guava.version>
     <commons-lang.version>3.3.2</commons-lang.version>
@@ -72,16 +72,19 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
