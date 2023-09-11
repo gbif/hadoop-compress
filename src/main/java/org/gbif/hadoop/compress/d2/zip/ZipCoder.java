@@ -35,9 +35,6 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import sun.nio.cs.ArrayDecoder;
-import sun.nio.cs.ArrayEncoder;
-
 /**
  * This class is a direct copy of the OpenJDK java.util.* equivalent.
  * Utility class for zipfile name and comment decoding and encoding
@@ -54,12 +51,6 @@ final class ZipCoder {
     // UTF-8 only for now. Other ArrayDeocder only handles
     // CodingErrorAction.REPLACE mode. ZipCoder uses
     // REPORT mode.
-    if (isUTF8 && cd instanceof ArrayDecoder) {
-      int clen = ((ArrayDecoder)cd).decode(ba, 0, length, ca);
-      if (clen == -1)    // malformed
-        throw new IllegalArgumentException("MALFORMED");
-      return new String(ca, 0, clen);
-    }
     ByteBuffer bb = ByteBuffer.wrap(ba, 0, length);
     CharBuffer cb = CharBuffer.wrap(ca);
     CoderResult cr = cd.decode(bb, cb, true);
@@ -82,14 +73,6 @@ final class ZipCoder {
     byte[] ba = new byte[len];
     if (len == 0)
       return ba;
-    // UTF-8 only for now. Other ArrayDeocder only handles
-    // CodingErrorAction.REPLACE mode.
-    if (isUTF8 && ce instanceof ArrayEncoder) {
-      int blen = ((ArrayEncoder)ce).encode(ca, 0, ca.length, ba);
-      if (blen == -1)    // malformed
-        throw new IllegalArgumentException("MALFORMED");
-      return Arrays.copyOf(ba, blen);
-    }
     ByteBuffer bb = ByteBuffer.wrap(ba);
     CharBuffer cb = CharBuffer.wrap(ca);
     CoderResult cr = ce.encode(cb, bb, true);
