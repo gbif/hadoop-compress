@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.hadoop.compress.d2;
 
 import java.io.ByteArrayInputStream;
@@ -37,7 +50,7 @@ public class D2CombineInputStream extends InputStream {
       // strip the complete footer (important!)
       raw.add(new FooteredInputStream(in, D2Footer.FOOTER_LENGTH));
     }
-    List<InputStream> combined = Lists.<InputStream>newArrayList(raw);
+    List<InputStream> combined = Lists.newArrayList(raw);
     // add a new stream which simply provides a closing byte sequence
     combined.add(new ByteArrayInputStream(D2Footer.FOOTER_CLOSE_DEFLATE));
 
@@ -60,6 +73,7 @@ public class D2CombineInputStream extends InputStream {
     return combinedStream.skip(n);
   }
 
+  @Override
   public int read(byte[] b, int off, int len) throws IOException {
     return combinedStream.read(b, off, len);
   }

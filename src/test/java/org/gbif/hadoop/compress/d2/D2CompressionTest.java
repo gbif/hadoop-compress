@@ -1,21 +1,32 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.hadoop.compress.d2;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 /**
  * Tests that demonstrate compression and decompression round tripping.
@@ -32,11 +43,11 @@ public class D2CompressionTest {
    */
   private static void merge(Iterable<File> parts, File target) throws IOException {
     try (
-      OutputStream os = new BufferedOutputStream(new FileOutputStream(target))
+      OutputStream os = new BufferedOutputStream(java.nio.file.Files.newOutputStream(target.toPath()))
     ) {
       for (File f : parts) {
-        try (InputStream is = new FileInputStream(f)) {
-          ByteStreams.copy(is, os);
+        try (InputStream is = java.nio.file.Files.newInputStream(f.toPath())) {
+          D2Utils.copy(is, os);
         }
       }
     }
@@ -50,7 +61,7 @@ public class D2CompressionTest {
     // fill a byte array with random bytes
     byte[] data = new byte[sizeInBytes];
     RANDOM.nextBytes(data);
-    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile))) {
+    try (OutputStream os = new BufferedOutputStream(java.nio.file.Files.newOutputStream(tempFile.toPath()))) {
       os.write(data);
       return tempFile;
     }
@@ -59,10 +70,10 @@ public class D2CompressionTest {
   /**
    * Returns a list of InputStreams to the files.
    */
-  private static Iterable<InputStream> asInputStreams(Iterable<File> files) throws FileNotFoundException {
-    List<InputStream> streams = Lists.newArrayList();
+  private static Iterable<InputStream> asInputStreams(Iterable<File> files) throws IOException {
+    List<InputStream> streams = new ArrayList<>();
     for (File f : files) {
-      streams.add(new FileInputStream(f));
+      streams.add(java.nio.file.Files.newInputStream(f.toPath()));
     }
     return streams;
   }
@@ -88,13 +99,13 @@ public class D2CompressionTest {
     List<File> deflated = Lists.newArrayList();
     for (File f : parts) {
       File compressedPart = File.createTempFile("comp-", D2Utils.FILE_EXTENSION);
-      D2Utils.compress(new FileInputStream(f), new FileOutputStream(compressedPart));
+      D2Utils.compress(java.nio.file.Files.newInputStream(f.toPath()), java.nio.file.Files.newOutputStream(compressedPart.toPath()));
       deflated.add(compressedPart);
     }
 
     // merge and decompress the compressed parts
     File decompressed = File.createTempFile("decomp-", ".txt");
-    D2Utils.decompress(asInputStreams(deflated), new FileOutputStream(decompressed));
+    D2Utils.decompress(asInputStreams(deflated), java.nio.file.Files.newOutputStream(decompressed.toPath()));
 
     Assert.assertTrue("Content of files should be identical", Files.equal(original, decompressed));
   }
@@ -107,10 +118,12 @@ public class D2CompressionTest {
   public void testCompress() throws IOException {
     File original = randomFileOfSize(1024 * 1024 * 10); // 10MB
     File compressed = File.createTempFile("comp-", D2Utils.FILE_EXTENSION);
-    D2Utils.compress(new FileInputStream(original), new FileOutputStream(compressed));
+    D2Utils.compress(java.nio.file.Files.newInputStream(original.toPath()),
+                     java.nio.file.Files.newOutputStream(compressed.toPath()));
 
     File decompressed = File.createTempFile("decomp-", ".txt");
-    D2Utils.decompress(new FileInputStream(compressed), new FileOutputStream(decompressed));
+    D2Utils.decompress(java.nio.file.Files.newInputStream(compressed.toPath()),
+                       java.nio.file.Files.newOutputStream(decompressed.toPath()));
 
     Assert.assertTrue("Content of files should be identical", Files.equal(original, decompressed));
   }
