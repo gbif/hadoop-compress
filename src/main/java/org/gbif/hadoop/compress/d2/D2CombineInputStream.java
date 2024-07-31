@@ -17,11 +17,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import javax.annotation.Nullable;
 
 /**
  * A stream that allows multiple raw D2 input streams to be merged, allowing access to the combined CRC-32 and the
@@ -45,12 +45,12 @@ public class D2CombineInputStream extends InputStream {
    * @param streams to raw D2 byte streams, such as file streams to .def2 files
    */
   public D2CombineInputStream(Iterable<InputStream> streams) {
-    List<FooteredInputStream> raw = Lists.newArrayList();
+    List<FooteredInputStream> raw = new ArrayList<>();
     for (InputStream in : streams) {
       // strip the complete footer (important!)
       raw.add(new FooteredInputStream(in, D2Footer.FOOTER_LENGTH));
     }
-    List<InputStream> combined = Lists.newArrayList(raw);
+    List<InputStream> combined = new ArrayList<>(raw);
     // add a new stream which simply provides a closing byte sequence
     combined.add(new ByteArrayInputStream(D2Footer.FOOTER_CLOSE_DEFLATE));
 
@@ -112,17 +112,23 @@ public class D2CombineInputStream extends InputStream {
   }
 
   public Long getCrc32() {
-    Preconditions.checkState(crc32 != null, "Can only retrieve CRC-32 if all streams were read to completion");
+    checkState(crc32 != null, "Can only retrieve CRC-32 if all streams were read to completion");
     return crc32;
   }
 
   public Long getCompressedLength() {
-    Preconditions.checkState(compressedLength != null, "Can only retrieve compressed length if all streams were read to completion");
+    checkState(compressedLength != null, "Can only retrieve compressed length if all streams were read to completion");
     return compressedLength;
   }
 
   public Long getUncompressedLength() {
-    Preconditions.checkState(uncompressedLength != null, "Can only retrieve uncompressed length if all streams were read to completion");
+    checkState(uncompressedLength != null, "Can only retrieve uncompressed length if all streams were read to completion");
     return uncompressedLength;
+  }
+
+  private static void checkState(boolean expression, @Nullable Object errorMessage) {
+    if (!expression) {
+      throw new IllegalStateException(String.valueOf(errorMessage));
+    }
   }
 }

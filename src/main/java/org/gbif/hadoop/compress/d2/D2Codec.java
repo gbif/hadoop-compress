@@ -26,8 +26,6 @@ import org.apache.hadoop.io.compress.Compressor;
 import org.apache.hadoop.io.compress.Decompressor;
 import org.apache.hadoop.io.compress.DecompressorStream;
 
-import com.google.common.base.Preconditions;
-
 /**
  * This class creates D2 compressors and decompressors providing the hooks for this to be a registered Hadoop codec.
  */
@@ -35,14 +33,16 @@ public final class D2Codec implements Configurable, CompressionCodec {
   private Configuration conf;
 
   @Override
-  public CompressionOutputStream createOutputStream(OutputStream out) throws IOException {
+  public CompressionOutputStream createOutputStream(OutputStream out) {
     return new D2CompressorStream(out, createCompressor());
   }
 
   @Override
-  public CompressionOutputStream createOutputStream(OutputStream out, Compressor compressor) throws IOException {
-    Preconditions.checkArgument(compressor instanceof D2Compressor, "Requires a %s", D2Compressor.class);
-    return new D2CompressorStream(out, (D2Compressor)compressor);
+  public CompressionOutputStream createOutputStream(OutputStream out, Compressor compressor) {
+    if (compressor instanceof D2Compressor) {
+      return new D2CompressorStream(out, (D2Compressor) compressor);
+    }
+    throw new IllegalArgumentException("Compressor object must be an instance of D2Compressor");
   }
 
   @Override
@@ -61,10 +61,13 @@ public final class D2Codec implements Configurable, CompressionCodec {
   }
 
   @Override
-  public CompressionInputStream createInputStream(InputStream in, Decompressor decompressor) throws IOException {
-    Preconditions.checkArgument(decompressor instanceof D2Decompressor, "Requires a %s", D2Decompressor.class);
+  public CompressionInputStream createInputStream(InputStream in, Decompressor decompressor)
+      throws IOException {
     // prepare the stream to strip the footer
-    return new DecompressorStream(D2Utils.prepareD2Stream(in), decompressor);
+    if (decompressor instanceof D2Decompressor) {
+      return new DecompressorStream(D2Utils.prepareD2Stream(in), decompressor);
+    }
+    throw new IllegalArgumentException("Decompressor object must be an instance of D2Decompressor");
   }
 
   @Override

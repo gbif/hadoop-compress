@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>56</version>
+    <version>58</version>
   </parent>
 
   <groupId>org.gbif.hadoop</groupId>
@@ -46,7 +47,7 @@
     <developerConnection>scm:git:git@github.com:gbif/hadoop-compress.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
-  
+
   <distributionManagement>
     <site>
       <id>gh-pages</id>
@@ -73,12 +74,13 @@
       <version>${hadoop.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- FOR TESTS -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
-
-    <!-- FOR TESTS -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
