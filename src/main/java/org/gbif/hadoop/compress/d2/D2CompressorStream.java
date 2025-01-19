@@ -20,20 +20,33 @@ import org.apache.hadoop.io.compress.CompressorStream;
 
 public class D2CompressorStream extends CompressorStream {
 
-  private static final int DEFAULT_BUFFER_SIZE = 8192; // same default as BufferedInputStream
+  private static final int DEFAULT_BUFFER_SIZE = 32768;
+  private static final String BUFFER_SIZE_ENV_VAR = "D2_BUFFER_SIZE"; // Name of the environment variable
+
   private final D2Compressor compressor;
 
+  private static int getBufferSizeFromEnv() {
+    String bufferSizeStr = System.getenv(BUFFER_SIZE_ENV_VAR);
+    if (bufferSizeStr != null) {
+      try {
+        return Integer.parseInt(bufferSizeStr);
+      } catch (NumberFormatException e) {
+        System.err.println("Invalid buffer size provided in environment variable. Using default buffer size.");
+      }
+    }
+    return DEFAULT_BUFFER_SIZE;
+  }
   public D2CompressorStream(OutputStream out, D2Compressor compressor, int bufferSize) {
     super(out, compressor, bufferSize);
     this.compressor = compressor;
   }
 
   public D2CompressorStream(OutputStream out, D2Compressor compressor) {
-    this(out, compressor, DEFAULT_BUFFER_SIZE);
+    this(out, compressor, getBufferSizeFromEnv());
   }
 
   public D2CompressorStream(OutputStream out) {
-    this(out, new D2Compressor(), DEFAULT_BUFFER_SIZE);
+    this(out, new D2Compressor(), getBufferSizeFromEnv());
   }
 
   /**
